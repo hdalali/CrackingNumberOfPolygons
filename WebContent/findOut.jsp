@@ -114,11 +114,21 @@ body {
 </head>
 
 <body>
+
+<%
+	 session = request.getSession();
+%>
+
+<%if(session == null) {
+	  System.out.println("session is  null ");
+  }%>
 	<h1>Cracking The Number Of Polygons In A Graph</h1>
 
 	<div id="graph-container">
+		
+		<!--  
 		<script>
-	sigma.parsers.json('myGraph1.json', {
+	sigma.parsers.json('myGraphjson1.json', {
 		  container: 'graph-container',
 		  settings: {
 			    maxNodeSize: 10,
@@ -128,6 +138,34 @@ body {
 			    minArrowSize: 3
 			}
 		});
+</script>
+-->
+<script>
+
+
+var g = {
+	nodes : [],
+	edges : []
+}; 
+
+<%if(session != null){%>
+	g = <%= session.getAttribute("data")%>;
+<%}%>
+
+// Create new Sigma instance in graph-container div (use your div name here) 
+s = new sigma({
+	graph : g,
+	container : 'graph-container',
+	renderer : {
+		container : document.getElementById('graph-container'),
+		type : 'canvas'
+	},
+	settings : {
+		minNodeSize : 0,
+		maxNodeSize : 6
+	}
+});
+
 </script>
 	</div>
 

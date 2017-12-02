@@ -29,9 +29,9 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 /**
  * Servlet implementation class Calculate
  */
-@WebServlet("/Calculate")
+@WebServlet("/Find")
 @MultipartConfig
-public class Calculate extends HttpServlet {
+public class Find extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static int siz=4;
 	public static int siz1=5;
@@ -39,7 +39,7 @@ public class Calculate extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Calculate() {
+    public Find() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -66,96 +66,18 @@ public class Calculate extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	
-	 private String extractFileName(Part part) {
-	        String contentDisp = part.getHeader("content-disposition");
-	        String[] items = contentDisp.split(";");
-	        for (String s : items) {
-	            if (s.trim().startsWith("filename")) {
-	                return s.substring(s.indexOf("=") + 2, s.length()-1);
-	            }
-	        }
-	        return "";
-	    }
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		String fileName = "/home/hdalali/workspace/termProject2/src/macha.csv";
-		//System.out.println(getServletContext().getRealPath("/home/hdalali/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/TermProject/fileName"));
-		HttpSession session = request.getSession();
-		Part filePart = request.getPart("file");
-		File file = new File(fileName);
-		if(filePart == null)
-			System.out.println("somehing is fishy");
-		File input = new File("/home/hdalali/workspace/termProject2/src/macha.csv");
-        File output = new File("/home/hdalali/workspace/termProject2/WebContent/myGraph1.json");
-        HashSet<String> cities = new HashSet<>();
-       
-        
-//        
-        String fName = extractFileName(filePart);
-        // refines the fileName in case it is an absolute path
-        fName = new File(fName).getName();
-        filePart.write("/home/hdalali/workspace/termProject2/src/macha.csv");
-        
-//        
-	//	filePart.write(fileName);
-       // File file = (File)request.getAttribute("myfilestore");
-        
-        //ObjectNode data = readObjectsFromCsv(input, cities);
-        //writeAsJson(data, output);
-		
-		Map<Integer,ArrayList<Integer>> hm = new HashMap<>();
-        int keyMax=0,valueMax=0,totalMax=0;
-        ArrayList<String> ans = new ArrayList<>();
-		try {
-			Scanner sc = new Scanner(input);
-			sc.next();
-			while (sc.hasNext()) {
-				String mydatas = sc.next();
-				String[] values = mydatas.split(",");
-				int key = Integer.parseInt(values[0]);
-				int value = Integer.parseInt(values[1]);
-				hm.putIfAbsent(key, new ArrayList<Integer>());
-				hm.get(key).add(value);
-			}
-			sc.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		for(Entry<Integer, ArrayList<Integer>> entry:hm.entrySet()){
-			int key = entry.getKey();
-		    ArrayList<Integer> values = entry.getValue();
-		    if(key>keyMax) keyMax=key;
-		    for(int i=0;i<values.size();i++){
-		    	if(values.get(i)>valueMax) valueMax=values.get(i);
-		    	ans.add(key+","+values.get(i));
-		    }
-		}
-		
-		totalMax=Math.max(keyMax,valueMax);
-		System.out.println("max is "+ totalMax);
+		int totalMax=0;
 		int[][] my_graph=new int[totalMax][totalMax];
-		
-		for(int i=0;i<ans.size();i++){
-			String[] lr = ans.get(i).split(",");
-			//System.out.println(lr[0]+",,,"+lr[1]);
-			int left= Integer.parseInt(lr[0]);
-			int right= Integer.parseInt(lr[1]);
-			my_graph[left-1][right-1] = 1; 
-			my_graph[right-1][left-1] = 1;
+		HttpSession session = request.getSession();
+		if(session.getAttribute("graphSize")!=null){
+			 totalMax = (int)session.getAttribute("graphSize");
+		}
+		if(session.getAttribute("generatedGraph")!=null){
+			my_graph = (int[][]) session.getAttribute("generatedGraph");
 		}
 		
-		for(int i=0;i<my_graph.length;i++){
-			for(int j=0;j<my_graph[0].length;j++){
-				System.out.print(my_graph[i][j]+ " ");
-			}
-			System.out.println();
-		}
-		session.setAttribute("graphSize", totalMax);
-		session.setAttribute("generatedGraph", my_graph);
-		request.getRequestDispatcher("/index.jsp").forward(request, response);
-		/*
-		//request.getRequestDispatcher("/ans.jsp").include(request, response);
 		
 		String res = "", answer = "";
 		System.out.println(request.getParameter("ind"));
@@ -184,7 +106,7 @@ public class Calculate extends HttpServlet {
 			}
 		}
 		System.out.println(answer);
-		request.getRequestDispatcher("/index.jsp").forward(request, response);
+		request.getRequestDispatcher("/findOut.jsp").forward(request, response);
 	}
 	
 	public static int countTrianglesDir(int matrix[][]){
@@ -248,8 +170,6 @@ public class Calculate extends HttpServlet {
 	        }
 	    return count/60;
 	    }
-	    
-	    */
 	/*
 	public static ObjectNode readObjectsFromCsv(File file, HashSet<String> cities) throws IOException {
 
@@ -325,5 +245,4 @@ public class Calculate extends HttpServlet {
         mapper.writeValue(file, data);
     }
     */
-}
 }

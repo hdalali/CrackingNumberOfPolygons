@@ -2,11 +2,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -17,83 +15,42 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 
-
-
-
-
-@WebServlet("/FileUploadHandler")
+@WebServlet("/FileParser")
 @MultipartConfig
-public class FileUploadHandler extends HttpServlet {
+
+public class FileParser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	ArrayList<String> city_list = new ArrayList<String>();
-	int cityValueToaAssigned = 0;
-	private final String UPLOAD_DIRECTORY = "/home/hdalali/workspace/termProject2/src";
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public FileParser() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
 
-		//process only if its multipart content
-		// if(ServletFileUpload.isMultipartContent(request)){
-
-		/*
-    	try {
-                List<FileItem> multiparts = new ServletFileUpload(
-                                         new DiskFileItemFactory()).parseRequest(request);
-
-                for(FileItem item : multiparts){
-                    if(!item.isFormField()){
-                        String name = new File(item.getName()).getName();
-                        item.write( new File(UPLOAD_DIRECTORY + File.separator + name));
-                    }
-                }
-		 */
-		/*
-		 * 
-		 * Sid code
-		 
-
-		List<FileItem> multiparts = new ServletFileUpload(
-				new DiskFileItemFactory()).parseRequest(request);
-
-		for(FileItem item : multiparts){
-			if(!item.isFormField()){
-				String name = new File(item.getName()).getName();
-				item.write( new File(UPLOAD_DIRECTORY + File.separator + name));
-			}
-		}*/
-		
-		/*if(ServletFileUpload.isMultipartContent(request)){
-            try {
-                List<FileItem> multiparts = new ServletFileUpload(
-                                         new DiskFileItemFactory()).parseRequest(request);
-              
-                for(FileItem item : multiparts){
-                    if(!item.isFormField()){
-                        String name = new File(item.getName()).getName();
-                        item.write( new File(UPLOAD_DIRECTORY + File.separator + name));
-                    }
-                }
-            }
-            catch(Exception e){
-            	System.out.println(e.getStackTrace());
-            }
-		}*/
-		
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		HttpSession	session = request.getSession();
 		String id = session.getId();
-		Part filePart = request.getPart("file");
-		request.setAttribute("filePart", filePart);
-
+		Part filePart = request.getPart("File");
+		
 		String stringLine = null;
 		//GraphResources gr = new GraphResources();
 		HashSet<String> city_list = new HashSet<String>();
@@ -103,9 +60,7 @@ public class FileUploadHandler extends HttpServlet {
 		ObjectNode obNode=null;
 
 		String fileName = null;
-		if(filePart == null)
-			System.out.println("why file part is null?");
-		
+
 		String partHeader = filePart.getHeader("content-disposition");
 		for (String cd : partHeader.split(";")) {
 			if (cd.trim().startsWith("filename")) {
@@ -125,7 +80,7 @@ public class FileUploadHandler extends HttpServlet {
 		ArrayNode arrayNode = csvMapper.createArrayNode();
 
 		ArrayNode sourceNode = csvMapper.createArrayNode();
-
+		
 		try{
 			bufferedReader = new BufferedReader(new InputStreamReader(filePart.getInputStream()));
 			bufferedReader.readLine();
@@ -161,7 +116,7 @@ public class FileUploadHandler extends HttpServlet {
 					xNode.put("y", Math.random()*4+1);
 					xNode.put("size",(int) Math.random()*2 + 1);
 					sourceNode.add(xNode);
-
+					
 
 				}
 
@@ -178,10 +133,10 @@ public class FileUploadHandler extends HttpServlet {
 					xNode.put("y", Math.random()*4+1);
 					xNode.put("size",(int) Math.random()*2 + 1);
 					sourceNode.add(xNode);
-
+					
 				}
-
-
+				
+				
 				map.get(lineArray[0]).add(new String[]{lineArray[1], lineArray[2]});
 				map.get(lineArray[1]).add(new String[]{lineArray[0], lineArray[2]});
 				arrayNode.add(jNode);
@@ -198,78 +153,34 @@ public class FileUploadHandler extends HttpServlet {
 
 		}
 
-		//        		gr.bfsAdjList = map;
-		//        		gr.edges = edge;
-		//        		gr.nodes = city_list.size();
-		//        		gr.nodeList = city_list.toArray(new String[2]);
-
-		/*for(String s : gr.nodeList){
-        		    	 System.out.println(s);
-        		     }*/
-		//session.setAttribute("resource", gr);
+//		gr.bfsAdjList = map;
+//		gr.edges = edge;
+//		gr.nodes = city_list.size();
+//		gr.nodeList = city_list.toArray(new String[2]);
+//
+//		/*for(String s : gr.nodeList){
+//		    	 System.out.println(s);
+//		     }*/
+//		session.setAttribute("resource", gr);
 		String str = (obNode == null)?null:obNode.toString();
 		session.setAttribute("json", str);
 		session.setAttribute("data", obNode);
-		
-		/*
-		Part filePart1 = request.getPart("file");
-		File file = new File(fileName);
-		if(filePart == null)
-			System.out.println("somehing is fishy");
-		filePart.write(fileName);
-		request.setAttribute("myfilestore", file);
-		*/
 		//filePart.write("/Users/siddharthjoshi/Desktop/"+fileName);
 		//new ObjectMapper().writeValue(new File("/Users/siddharthjoshi/Desktop/DataEngineering/TermProject/WebContent/xyz.json"), obNode);
 
 		request.setAttribute("fs","true");
-
-		/*
-		 * 
-		 * Sid code
-		 */
-		//File uploaded successfully
-//		request.setAttribute("filname", arg1);
-
-		request.setAttribute("message", "File Uploaded Successfully");
-		request.setAttribute("fileName", fileName);
-		/*        
-    } catch (Exception ex) {
-               request.setAttribute("message", "File Upload Failed due to " + ex);
-            }          
-		 */
-		//}else{
-		request.setAttribute("message",
-				"Sorry this Servlet only handles file upload request");
-		//}
 		
-		//if(ServletFileUpload.isMultipartContent(request)){
-		/*
-            try {
-                List<FileItem> multiparts = new ServletFileUpload(
-                                         new DiskFileItemFactory()).parseRequest(request);
-              
-                for(FileItem item : multiparts){
-                    if(!item.isFormField()){
-                        String name = new File(item.getName()).getName();
-                        item.write( new File(UPLOAD_DIRECTORY + File.separator + name));
-                    }
-                }
-            }
-            catch(Exception e){
-            	System.out.println(e.getStackTrace());
-            }
-		*/
+//		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/graphDisplay.jsp");
+//		dispatcher.forward(request, response);
+//		request.getRequestDispatcher("/abc.jsp").forward(request, response);
 		
-
-
-		request.getRequestDispatcher("Calculate").forward(request, response);
-
+		response.sendRedirect("abc.jsp");
 	}
-
+	
 	private int checkCityValueAssigned(String string) {
 		if(city_list.contains(string))
 			return 1;
 		return -1;
 	}
+
 }
