@@ -48,18 +48,7 @@ public class Calculate extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		int[][] graph = {{0, 1, 1, 0},{1, 0, 1, 1},{1, 1, 0, 1},{0, 1, 1, 0}};
-//		int[][] graphDirected = {{0, 0, 1, 0},{1, 0, 1, 1},{0, 0, 0, 0},{0, 0, 1, 0}};
-//		int[][] graphQuad = {{0, 1, 1, 0, 1},{1, 0, 1, 1,1},{1, 1, 0, 1,0},{0, 1, 1, 0,1},{1, 1, 0, 1,0}};
-//		int[][] graphPent = {{0, 1, 0, 0, 1, 0},{1, 0, 1, 0, 1, 0},{0, 1, 0, 1, 0, 1},{0, 0, 1, 0, 1, 1},{1, 1, 0, 1, 0, 0},{0, 0, 1, 1, 0, 0}};
-//		int[][] graphPent1 = {{0, 1, 0, 0, 1, 0},{1, 0, 1, 0, 0, 0},{0, 1, 0, 1, 0, 1},{0, 0, 1, 0, 1, 1},{1, 0, 0, 1, 0, 0},{0, 0, 1, 1, 0, 0}};
-//		
-		/*System.out.println("Total number of Triangle in Undirected-Graph: "+ countTrianglesUndir(graph));
-		System.out.println("Total number of Triangle in Directed-Graph: "+ countTrianglesDir(graphDirected));
-		System.out.println("Total number of Quadrilateral in Undirected-Graph: "+ countQuad(graphQuad));
-		System.out.println("Total number of Pentagon in Undirected-Graph Example 1: "+ countPent(graphPent));
-		System.out.println("Total number of Pentagon in Undirected-Graph Example 2: "+ countPent(graphPent1));*/
-		
+
 	}
 
 	/**
@@ -79,7 +68,7 @@ public class Calculate extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String fileName = "/home/hdalali/workspace/termProject2/src/macha.csv";
-		//System.out.println(getServletContext().getRealPath("/home/hdalali/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/TermProject/fileName"));
+		
 		HttpSession session = request.getSession();
 		Part filePart = request.getPart("file");
 		File file = new File(fileName);
@@ -88,21 +77,12 @@ public class Calculate extends HttpServlet {
 		File input = new File("/home/hdalali/workspace/termProject2/src/macha.csv");
         File output = new File("/home/hdalali/workspace/termProject2/WebContent/myGraph1.json");
         HashSet<String> cities = new HashSet<>();
-       
-        
-//        
+      
         String fName = extractFileName(filePart);
-        // refines the fileName in case it is an absolute path
+       
         fName = new File(fName).getName();
         filePart.write("/home/hdalali/workspace/termProject2/src/macha.csv");
         
-//        
-	//	filePart.write(fileName);
-       // File file = (File)request.getAttribute("myfilestore");
-        
-        //ObjectNode data = readObjectsFromCsv(input, cities);
-        //writeAsJson(data, output);
-		
 		Map<Integer,ArrayList<Integer>> hm = new HashMap<>();
         int keyMax=0,valueMax=0,totalMax=0;
         ArrayList<String> ans = new ArrayList<>();
@@ -142,7 +122,9 @@ public class Calculate extends HttpServlet {
 			int left= Integer.parseInt(lr[0]);
 			int right= Integer.parseInt(lr[1]);
 			my_graph[left-1][right-1] = 1; 
-			my_graph[right-1][left-1] = 1;
+			if(request.getParameter("gtype").equalsIgnoreCase("ug")){
+				my_graph[right-1][left-1] = 1;
+			}
 		}
 		
 		for(int i=0;i<my_graph.length;i++){
@@ -153,177 +135,8 @@ public class Calculate extends HttpServlet {
 		}
 		session.setAttribute("graphSize", totalMax);
 		session.setAttribute("generatedGraph", my_graph);
+		System.out.println("Graph Type selected is"+request.getParameter("gtype"));
 		request.getRequestDispatcher("/index.jsp").forward(request, response);
-		/*
-		//request.getRequestDispatcher("/ans.jsp").include(request, response);
 		
-		String res = "", answer = "";
-		System.out.println(request.getParameter("ind"));
-		if(request.getParameter("ind")!= null){
-			 res=request.getParameter("opt");
-			 answer="";
-			 //System.out.println(res);
-			if(res.equals("dit")){
-				siz=totalMax;
-				request.setAttribute("answer", "Total number of Triangle in Directed-Graph: "+ countTrianglesDir(my_graph));
-			}
-			
-			if(res.equals("ut")){
-				siz=totalMax;
-				request.setAttribute("answer","Total number of Triangle in Un-Directed-Graph: "+ countTrianglesUndir(my_graph));	
-			}
-			
-			if(res.equals("quad")){
-				siz1=totalMax;
-				request.setAttribute("answer","Total number of Quadrilateral in Directed-Graph: "+ countQuad(my_graph));	
-			}
-			
-			if(res.equals("pent")){
-				siz2=totalMax;
-				request.setAttribute("answer","Total number of Pentagon in Directed-Graph: "+ countPent(my_graph));
-			}
-		}
-		System.out.println(answer);
-		request.getRequestDispatcher("/index.jsp").forward(request, response);
-	}
-	
-	public static int countTrianglesDir(int matrix[][]){
-	    int count = 0;
-	    for(int i = 0; i < siz; i++){
-	        for(int j = 0; j < siz; j++){
-	                for(int k = 0; k < siz; k++){
-	                    if(matrix[i][j]==1 && matrix[j][k]==1 && matrix[k][i]==1){
-	                        count++;
-	                    }
-	                }
-	            }
-	        }
-	    return count/3;
-	    }
-	
-	public static int countTrianglesUndir(int matrix[][]){
-	    int count = 0;
-	    for(int i = 0; i < siz; i++){
-	        for(int j = 0; j < siz; j++){
-	                for(int k = 0; k < siz; k++){
-	                    if(matrix[i][j]==1 && matrix[j][k]==1 && matrix[k][i]==1){
-	                        count++;
-	                    }
-	                }
-	            }
-	        }
-	    return count/6;
-	    }
-	
-	public static int countQuad(int matrix[][]){
-	    int count = 0;
-	    for(int i = 0; i < siz1; i++){
-	        for(int j = 0; j < siz1; j++){
-	                for(int k = 0; k < siz1; k++){
-	                	for(int l=0; l<siz1; l++){
-	                    if(matrix[i][j]==1 && matrix[j][k]==1 && matrix[k][l]==1 && matrix[l][i]==1){
-	                        count++;
-	                    }
-	                	}
-	                }
-	            }
-	        }
-	    return count/24;
-	    }
-	
-	public static int countPent(int matrix[][]){
-	    int count = 0;
-	    for(int i = 0; i < siz2; i++){
-	        for(int j = 0; j < siz2; j++){
-	                for(int k = 0; k < siz2; k++){
-	                	for(int l=0; l<siz2; l++){
-	                		for(int m=0; m<siz2; m++){
-	                			if(matrix[i][j]==1 && matrix[j][k]==1 && matrix[k][l]==1 && matrix[l][m]==1 && matrix[m][i]==1){
-	                				count++;
-	                			}
-	                		}
-	                	}
-	                }
-	            }
-	        }
-	    return count/60;
-	    }
-	    
-	    */
-	/*
-	public static ObjectNode readObjectsFromCsv(File file, HashSet<String> cities) throws IOException {
-
-        CsvSchema bootstrap = CsvSchema.emptySchema().withHeader();
-        CsvMapper csvMapper = new CsvMapper();
-        ArrayNode arrayNode = csvMapper.createArrayNode();
-        ArrayNode sourceNode = csvMapper.createArrayNode();
-        MappingIterator<Map<?, ?>> mappingIterator = csvMapper.reader(Map.class).with(bootstrap).readValues(file);
-  
-        while(mappingIterator.hasNext()){
-            ObjectNode jNode = csvMapper.convertValue(mappingIterator.next(), ObjectNode.class);
-//            objectNode.put(csvMapper.convertValue(mappingIterator.next(), JsonNode.class));
-        System.out.println(jNode.toString()); 
-           String src = jNode.get("source").toString();
-           String dest = jNode.get("destination").toString();
-
-           src = src.substring(1, src.length()-1);
-           dest = dest.substring(1, dest.length()-1);
-           jNode.put("target", dest);
-           jNode.put("id", src+dest);
-         //  jNode.put("label", src+dest);
-           jNode.put("type", "arrow" );
-           jNode.put("size", 50);
-            if(!cities.contains(src)){
-                ObjectNode xNode = csvMapper.createObjectNode();
-
-                xNode.put("id", src);
-                xNode.put("label", src);
-                xNode.put("x", 4 + (int)(Math.random() * ((20 - 4) + 1)));
-                xNode.put("y", 4 + (int)(Math.random() * ((16) + 1)));
-                xNode.put("size", 1);
-                xNode.put("color","#ff000000" );
-                cities.add(src);
-
-//                sourceNode.add(csvMapper.convertValue(jNode.get("source"), JsonNode.class));
-                sourceNode.add(xNode);
-
-            }
-            if(!cities.contains(dest)){
-                ObjectNode xNode = csvMapper.createObjectNode();
-
-                xNode.put("id", dest);
-                xNode.put("label", dest);
-                xNode.put("x", 4 + (int)(Math.random() * ((20 - 4) + 1)));
-                xNode.put("y", 4 + (int)(Math.random() * ((16) + 1)));
-                cities.add(dest);
-
-               // sourceNode.add(csvMapper.convertValue(jNode.get("destination"), JsonNode.class));
-                sourceNode.add(xNode);
-
-            }
-            jNode.remove("destination");
-            arrayNode.add(jNode);
-//            Object[] s =  map.get(map.size()-1).values().toArray();
-          /*  if(!cities.contains(s[0].toString()))
-                cities.add(s[0].toString());
-        }
-        ObjectNode obNode =(ObjectNode) csvMapper.createObjectNode().set("edges", arrayNode);
-        obNode.set("nodes", sourceNode);
-
-        System.out.println(obNode);
-        /*
-        mappingIterator = csvMapper.reader(Map.class).with(bootstrap).readValues(file);
-
-        return mappingIterator.readAll();
-        
-        new ObjectMapper().writeValue(new File("/home/hdalali/workspace/TermProject/WebContent/myGraph1.json"), obNode);
-        return obNode;
-    }
-
-    public static void writeAsJson(ObjectNode data, File file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(file, data);
-    }
-    */
 }
 }

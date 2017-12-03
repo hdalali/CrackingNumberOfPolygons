@@ -125,23 +125,7 @@ body {
 	<h1>Cracking The Number Of Polygons In A Graph</h1>
 
 	<div id="graph-container">
-		
-		<!--  
-		<script>
-	sigma.parsers.json('myGraphjson1.json', {
-		  container: 'graph-container',
-		  settings: {
-			    maxNodeSize: 10,
-			    minNodeSize: 1,
-			    minEdgeSize: 2,
-			    maxEdgeSize: 5,
-			    minArrowSize: 3
-			}
-		});
-</script>
--->
 <script>
-
 
 var g = {
 	nodes : [],
@@ -159,10 +143,13 @@ s = new sigma({
 	renderer : {
 		container : document.getElementById('graph-container'),
 		type : 'canvas'
-	},
-	settings : {
-		minNodeSize : 0,
-		maxNodeSize : 6
+	} ,
+	settings: {
+	    maxNodeSize: 10,
+	    minNodeSize: 1,
+	    minEdgeSize: 2,
+	    maxEdgeSize: 5,
+	    minArrowSize: 3
 	}
 });
 
@@ -176,11 +163,14 @@ s = new sigma({
 			</h4>
 			<form action="Find" method="post" enctype="multipart/form-data">
 				<select name="opt">
+				<%if(request.getParameter("gtype").equalsIgnoreCase("dig")) {%>
 					<option value="dit">No. of Triangles in Directed Graph</option>
+					<%} else if(request.getParameter("gtype").equalsIgnoreCase("ug")) {%>
 					<option value="ut">No. of Triangles in Un-Directed Graph</option>
 					<option value="quad">No. of Quadrilaterals in Un-Directed
 						Graph</option>
 					<option value="pent">No. of Pentagons in Un-Directed Graph</option>
+					<%} %>
 				</select>
 				<input name="ind" type="submit"  value="Go"/>
 			</form>

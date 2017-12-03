@@ -42,52 +42,7 @@ public class FileUploadHandler extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		//process only if its multipart content
-		// if(ServletFileUpload.isMultipartContent(request)){
 
-		/*
-    	try {
-                List<FileItem> multiparts = new ServletFileUpload(
-                                         new DiskFileItemFactory()).parseRequest(request);
-
-                for(FileItem item : multiparts){
-                    if(!item.isFormField()){
-                        String name = new File(item.getName()).getName();
-                        item.write( new File(UPLOAD_DIRECTORY + File.separator + name));
-                    }
-                }
-		 */
-		/*
-		 * 
-		 * Sid code
-		 
-
-		List<FileItem> multiparts = new ServletFileUpload(
-				new DiskFileItemFactory()).parseRequest(request);
-
-		for(FileItem item : multiparts){
-			if(!item.isFormField()){
-				String name = new File(item.getName()).getName();
-				item.write( new File(UPLOAD_DIRECTORY + File.separator + name));
-			}
-		}*/
-		
-		/*if(ServletFileUpload.isMultipartContent(request)){
-            try {
-                List<FileItem> multiparts = new ServletFileUpload(
-                                         new DiskFileItemFactory()).parseRequest(request);
-              
-                for(FileItem item : multiparts){
-                    if(!item.isFormField()){
-                        String name = new File(item.getName()).getName();
-                        item.write( new File(UPLOAD_DIRECTORY + File.separator + name));
-                    }
-                }
-            }
-            catch(Exception e){
-            	System.out.println(e.getStackTrace());
-            }
-		}*/
 		
 		HttpSession	session = request.getSession();
 		String id = session.getId();
@@ -95,7 +50,7 @@ public class FileUploadHandler extends HttpServlet {
 		request.setAttribute("filePart", filePart);
 
 		String stringLine = null;
-		//GraphResources gr = new GraphResources();
+		
 		HashSet<String> city_list = new HashSet<String>();
 		String[] lineArray = new String[3];
 		HashMap<String, ArrayList<String[]> > map = new HashMap<String, ArrayList<String[]> >();
@@ -142,14 +97,16 @@ public class FileUploadHandler extends HttpServlet {
 				dest = dest.trim();
 				weight = weight.trim();
 				jNode.put("id", src+dest);
-
+				if(request.getParameter("gtype").equalsIgnoreCase("dig")){
+					jNode.put("type", "arrow");
+				}
+             
 				jNode.put("source", src);
 				jNode.put("target", dest);
 
 				int cityValue = checkCityValueAssigned(src);
 
-				if (!city_list.contains(src) ) {//cityValue not assigned yet
-					//city_list.add[cityValueToaAssigned] = lineArray[0];
+				if (!city_list.contains(src) ) {
 					city_list.add(src); 
 					map.put(src, new ArrayList<String[]>());
 
@@ -159,7 +116,8 @@ public class FileUploadHandler extends HttpServlet {
 					xNode.put("label", src);
 					xNode.put("x", Math.random()*4+1);
 					xNode.put("y", Math.random()*4+1);
-					xNode.put("size",(int) Math.random()*2 + 1);
+					xNode.put("size",1);
+					xNode.put("color", "#ff0000");
 					sourceNode.add(xNode);
 
 
@@ -177,6 +135,7 @@ public class FileUploadHandler extends HttpServlet {
 					xNode.put("x", Math.random()*4+1);
 					xNode.put("y", Math.random()*4+1);
 					xNode.put("size",(int) Math.random()*2 + 1);
+					xNode.put("color", "#ff0000");
 					sourceNode.add(xNode);
 
 				}
@@ -198,68 +157,20 @@ public class FileUploadHandler extends HttpServlet {
 
 		}
 
-		//        		gr.bfsAdjList = map;
-		//        		gr.edges = edge;
-		//        		gr.nodes = city_list.size();
-		//        		gr.nodeList = city_list.toArray(new String[2]);
-
-		/*for(String s : gr.nodeList){
-        		    	 System.out.println(s);
-        		     }*/
-		//session.setAttribute("resource", gr);
+		
 		String str = (obNode == null)?null:obNode.toString();
 		session.setAttribute("json", str);
 		session.setAttribute("data", obNode);
 		
-		/*
-		Part filePart1 = request.getPart("file");
-		File file = new File(fileName);
-		if(filePart == null)
-			System.out.println("somehing is fishy");
-		filePart.write(fileName);
-		request.setAttribute("myfilestore", file);
-		*/
-		//filePart.write("/Users/siddharthjoshi/Desktop/"+fileName);
-		//new ObjectMapper().writeValue(new File("/Users/siddharthjoshi/Desktop/DataEngineering/TermProject/WebContent/xyz.json"), obNode);
-
+		
 		request.setAttribute("fs","true");
 
-		/*
-		 * 
-		 * Sid code
-		 */
-		//File uploaded successfully
-//		request.setAttribute("filname", arg1);
-
+		
 		request.setAttribute("message", "File Uploaded Successfully");
 		request.setAttribute("fileName", fileName);
-		/*        
-    } catch (Exception ex) {
-               request.setAttribute("message", "File Upload Failed due to " + ex);
-            }          
-		 */
-		//}else{
+		
 		request.setAttribute("message",
 				"Sorry this Servlet only handles file upload request");
-		//}
-		
-		//if(ServletFileUpload.isMultipartContent(request)){
-		/*
-            try {
-                List<FileItem> multiparts = new ServletFileUpload(
-                                         new DiskFileItemFactory()).parseRequest(request);
-              
-                for(FileItem item : multiparts){
-                    if(!item.isFormField()){
-                        String name = new File(item.getName()).getName();
-                        item.write( new File(UPLOAD_DIRECTORY + File.separator + name));
-                    }
-                }
-            }
-            catch(Exception e){
-            	System.out.println(e.getStackTrace());
-            }
-		*/
 		
 
 

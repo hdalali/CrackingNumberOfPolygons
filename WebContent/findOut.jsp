@@ -160,9 +160,12 @@ s = new sigma({
 		container : document.getElementById('graph-container'),
 		type : 'canvas'
 	},
-	settings : {
-		minNodeSize : 0,
-		maxNodeSize : 6
+	settings: {
+	    maxNodeSize: 10,
+	    minNodeSize: 1,
+	    minEdgeSize: 2,
+	    maxEdgeSize: 5,
+	    minArrowSize: 3
 	}
 });
 

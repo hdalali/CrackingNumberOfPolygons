@@ -50,7 +50,7 @@ body {
       left: 0;
       right: 0;
       position: absolute;
-      width: 44%;
+      width: 55%;
       height: 1%;
       margin: 0 auto;
       top:50%; height:4.5em; margin-top:16em;
@@ -96,13 +96,17 @@ h2 {
     <br>
     </h2>
     <h2 align="center"><u><i>You can find following information from the website.</i></u></h2>
-    <h2 align="left"><i>No. of triangles in Directed Graph &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No. of triangles in Un-Directed Graph</i></h2> 
+    <h2 align="left"><i>No. of Triangles in Directed Graph &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No. of Triangles in Un-Directed Graph</i></h2> 
     <br>
     <h2 align="left"><i>No. of Quadrilaterals in Un-Directed Graph  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No. of Pentagons in Un-Directed Graph</i></h2>
    </div>
         <div id="submitPos">
             <form action="FileUploadHandler" method="post" enctype="multipart/form-data">
                 <input type="file" class="button" name="file" align="right"/>
+                 <select name="gtype">
+					<option value="ug">Un-Directed Graph</option>
+					<option value="dig">Directed Graph</option>
+				</select>
                 <input type="submit" class="button" value="upload"/>
             </form>          
         </div>
